@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Watchlist() {
+function WatchList() {
   return (
     <div>WatchList</div>
   )
