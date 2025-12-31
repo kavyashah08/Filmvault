@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import MovieCard from './MovieCard.jsx'
 import axios from 'axios'
+import Pagination from './Pagination.jsx'
 function Movies() {
   const [movies,setMovies] = useState([])
+  const [pageNo,setPageNo] = useState(1)
+
+  const handlePrev = ()=>{
+    if(pageNo===1){
+      setPageNo(pageNo)
+    }
+    else{
+      setPageNo(pageNo-1)
+    }
+  }
+  const handleNext = ()=>{
+    setPageNo(pageNo+1)
+  }
   useEffect(()=>{
-    axios.get('https://api.themoviedb.org/3/movie/popular?api_key=1ebce2df7cd12db4f01f8d0df71d6bda&language=en-US&page=1').then(function(resp){
+    axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=1ebce2df7cd12db4f01f8d0df71d6bda&language=en-US&page=${pageNo}`).then(function(resp){
       setMovies(resp.data.results)
-    },[])
+    },[pageNo])
   })
   return (
     <div className='p-5'>
@@ -19,6 +33,7 @@ function Movies() {
           return <MovieCard PosterPath={movieOb.poster_path} Name={movieOb.original_title} />
         })}
       </div>
+      <Pagination pageNo={pageNo} handlePrev={handlePrev} handleNext={handleNext} />
     </div>
   )
 }
