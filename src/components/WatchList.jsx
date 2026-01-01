@@ -1,6 +1,31 @@
+import { useState } from "react";
+
 function WatchList({ watchlist }) {
+const [search , setSearch] = useState('');
+
+let handleSearch = (e) => {
+  setSearch(e.target.value);
+}
+
   return (
     <>
+    <div className="flex justify-center flex-wrap m-4">
+      <div className="flex justify-center items-center h-[3rem] w-[9rem] bg-blue-400 rounded-xl mx-4">Action</div>
+      <div className="flex justify-center items-center h-[3rem] w-[9rem] bg-blue-400 rounded-xl ">Drama</div>
+    </div>
+
+    <div className="flex justify-center flex-wrap m-4">
+      <input onChange={handleSearch} value={search} type="text" placeholder="Search...." className="h-[44px]
+    w-[360px]
+    px-4
+    rounded-lg
+    bg-gray-200
+    outline-none
+    focus:ring-2
+    focus:ring-blue-400" 
+      />
+
+    </div>
       <div className="overflow-hidden rounded-lg border border-gray-200 m-8">
         <table className="w-full text-gray-500 text-center">
           <thead className="border-b-2">
@@ -13,7 +38,9 @@ function WatchList({ watchlist }) {
             </tr>
           </thead>
           <tbody>
-            {watchlist.map((movieOb) => (
+            {watchlist.filter((movieOb)=>{
+              return movieOb.title.toLowerCase().includes(search.toLowerCase())
+            }).map((movieOb) => (
               <tr key={movieOb.id} className="border-b-2">
                 <td className="flex items-center px-6 py-4">
                   <img
