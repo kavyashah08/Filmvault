@@ -5,7 +5,7 @@ import Pagination from './Pagination.jsx'
 function Movies({handleAddToWatchlist,handleRemoveFromWatchlist,watchlist}) {
   const [movies,setMovies] = useState([])
   const [pageNo,setPageNo] = useState(1)
-
+  const API_KEY = import.meta.env.VITE_API_KEY
   const handlePrev = ()=>{
     if(pageNo===1){
       setPageNo(pageNo)
@@ -18,7 +18,7 @@ function Movies({handleAddToWatchlist,handleRemoveFromWatchlist,watchlist}) {
     setPageNo(pageNo+1)
   }
   useEffect(()=>{
-    axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=1ebce2df7cd12db4f01f8d0df71d6bda&language=en-US&page=${pageNo}`).then(function(resp){
+    axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${pageNo}`).then(function(resp){
       setMovies(resp.data.results)
     },[pageNo])
   })
