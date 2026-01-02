@@ -1,32 +1,43 @@
-import { useState } from "react";
-
-function WatchList({ watchlist , setWatchList}) {
+import { useEffect, useState } from "react";
+import genreids from "../Utility/Genres"
+function WatchList({ watchlist , setWatchList, handleRemoveFromWatchlist}) {
   const [search, setSearch] = useState("");
-
+  const [genrelist,setGenreList] = useState(['All genres'])
+  const [currGenre,setCurrGenre] = useState('All genres')
   let handleSearch = (e) => {
     setSearch(e.target.value);
   };
+  let handleFilter = (genre)=>{
+    setCurrGenre(genre)
+  }
   let sortIncreasing = () =>{
     let sortedi = watchlist.sort((movieA,movieB)=>{
       return movieA.vote_average - movieB.vote_average
-      setWatchList([...sortedi])
     })
+    setWatchList([...sortedi])
   }
   let sortDecreasing = () =>{
     let sortedd = watchlist.sort((movieA,movieB)=>{
       return movieB.vote_average - movieA.vote_average
-      setWatchList([...sortedd])
     })
+      setWatchList([...sortedd])
   }
+useEffect(()=>{
+  let temp = watchlist.map((movieOb)=>{
+    return genreids[movieOb.genre_ids[0]]
+  })
+  temp = new Set(temp)
+  setGenreList(['All genres',...temp])
+  console.log(temp)
+},[watchlist])
   return (
     <>
       <div className="flex justify-center flex-wrap m-4">
-        <div className="flex justify-center items-center h-[3rem] w-[9rem] bg-blue-400 rounded-xl mx-4">
-          Action
+        {genrelist.map((genre)=>{
+          return <div onClick = {()=>handleFilter(genre)}className={currGenre==genre? "flex justify-center items-center h-[3rem] w-[9rem] bg-blue-400 rounded-xl mx-4" : "flex justify-center items-center h-[3rem] w-[9rem] bg-gray-900/60 rounded-xl mx-4"}>
+          {genre}
         </div>
-        <div className="flex justify-center items-center h-[3rem] w-[9rem] bg-blue-400 rounded-xl ">
-          Drama
-        </div>
+        })}
       </div>
 
       <div className="flex justify-center flex-wrap m-4">
@@ -62,7 +73,14 @@ function WatchList({ watchlist , setWatchList}) {
           </thead>
           <tbody>
             {watchlist
-              .filter((movieOb) => {
+              .filter((movieOb)=>{
+                if(currGenre=='All genres'){
+                  return true
+                }
+                else{
+                  return genreids[movieOb.genre_ids[0]]==currGenre;
+                }
+              }).filter((movieOb) => {
                 return movieOb.title
                   .toLowerCase()
                   .includes(search.toLowerCase());
@@ -79,8 +97,8 @@ function WatchList({ watchlist , setWatchList}) {
                   </td>
                   <td>{movieOb.vote_average}</td>
                   <td>{movieOb.popularity}</td>
-                  <td>Action</td>
-                  <td className="text-red-800 cursor-pointer">Delete</td>
+                  <td>{genreids[movieOb.genre_ids[0]]}</td>
+                  <td onClick = {()=>handleRemoveFromWatchlist(movieOb)}className="text-red-800 cursor-pointer">Delete</td>
                 </tr>
               ))}
           </tbody>
